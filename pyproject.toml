@@ -1,0 +1,11 @@
+[project]
+name = "adversarylab"
+version = "0.1.0"
+authors = [
+    { name = "Sri Ram Kunamsetty", email = "mohansriramkunamsetty@gmail.com" }
+]
+requires-python = ">=3.10"
+[tool.pytest.ini_options]
+pythonpath = ["."]
+[tool.ruff]
+line-length = 110

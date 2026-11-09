@@ -1,0 +1,6 @@
+apiVersion: v2
+name: adversarylab
+description: Multi-agent red-team and agent-sandbox platform for LLM apps
+type: application
+version: 0.1.0
+appVersion: "0.1.0"
