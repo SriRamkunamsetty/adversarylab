@@ -1,0 +1,92 @@
+services:
+  adversarylab:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: adversarylab:prod
+    ports:
+      - "8081:8081"
+    environment:
+      API_KEY: ${API_KEY:?set API_KEY in .env}
+      SECRET_KEY: ${SECRET_KEY:?set SECRET_KEY in .env}
+      DATA_DIR: /data
+      RATE_LIMIT_PER_MIN: 240
+      COOKIE_SECURE: "0"
+      TRUST_PROXY: "1"
+      CAMPAIGN_DEADLINE_S: "60"
+    volumes:
+      - app_data:/data
+    read_only: true
+    tmpfs:
+      - /tmp
+      - /dev/shm
+    cap_drop:
+      - ALL
+    security_opt:
+      - "no-new-privileges:true"
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "python", "-c", "import urllib.request as u; u.urlopen('http://127.0.0.1:8081/readyz')"]
+      interval: 15s
+      timeout: 3s
+      retries: 3
+    depends_on:
+      - postgres
+      - redis
+
+  postgres:
+    image: postgres:16-alpine
+    environment:
+      POSTGRES_DB: adversarylab
+      POSTGRES_USER: ${POSTGRES_USER:-adversary_user}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-adversary_pass_2026}
+    volumes:
+      - pg_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U adversary_user -d adversarylab"]
+      interval: 10s
+      timeout: 3s
+      retries: 5
+    restart: unless-stopped
+
+  redis:
+    image: redis:7-alpine
+    command: ["redis-server", "--appendonly", "yes"]
+    volumes:
+      - redis_data:/data
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 3s
+      retries: 5
+    restart: unless-stopped
+
+  prometheus:
+    image: prom/prometheus:v2.52.0
+    ports:
+      - "9090:9090"
+    volumes:
+      - ./deploy/monitoring/prometheus.yml:/etc/prometheus/prometheus.yml:ro
+      - ./deploy/monitoring/prometheus-rules.yaml:/etc/prometheus/prometheus-rules.yaml:ro
+      - prom_data:/prometheus
+    restart: unless-stopped
+
+  grafana:
+    image: grafana/grafana:10.4.2
+    ports:
+      - "3000:3000"
+    environment:
+      GF_SECURITY_ADMIN_PASSWORD: ${GRAFANA_ADMIN_PASSWORD:-admin}
+      GF_USERS_ALLOW_SIGN_UP: "false"
+    volumes:
+      - grafana_data:/var/lib/grafana
+    restart: unless-stopped
+    depends_on:
+      - prometheus
+
+volumes:
+  app_data:
+  pg_data:
+  redis_data:
+  prom_data:
+  grafana_data:

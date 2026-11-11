@@ -1,0 +1,28 @@
+groups:
+  - name: adversarylab_alerts
+    rules:
+      - alert: AdversaryLabDown
+        expr: up{job="adversarylab"} == 0
+        for: 1m
+        labels:
+          severity: critical
+        annotations:
+          summary: "AdversaryLab instance is unreachable"
+          description: "Prometheus has failed to scrape AdversaryLab for more than 1 minute."
+
+      - alert: HighAttackSuccessRateSpike
+        expr: adversarylab_last_attack_success_rate > 0.15
+        for: 2m
+        labels:
+          severity: warning
+        annotations:
+          summary: "LLM Target ASR exceeded acceptable threshold"
+          description: "Latest red-team campaign detected an Attack-Success Rate (ASR) > 15%."
+
+      - alert: HighSecretLeakageRate
+        expr: increase(adversarylab_leaks_total[15m]) > 5
+        labels:
+          severity: critical
+        annotations:
+          summary: "Significant secret leakage detected in recent campaigns"
+          description: "Target models have leaked planted canary secrets 5+ times in the last 15 minutes."

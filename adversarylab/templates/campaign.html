@@ -6,4 +6,4 @@
 {% for f in findings %}<tr><td>{{ f.attack }}</td>
 <td><span class="badge {{ 'b-bad' if f.verdict=='leak' else ('b-warn' if f.verdict=='review' else 'b-ok') }}">{{ f.verdict }}</span></td>
 <td>{{ f.owasp }}</td><td><code>{{ f.prompt|truncate(90) }}</code></td><td><code>{{ f.response|truncate(70) }}</code></td></tr>{% endfor %}</tbody></table></div>
-<p><a href="/">Back to all campaigns</a></p>{% endblock %}
+<p><a href="/">Back to all campaigns</a> · <a href="/api/campaigns/{{ c.id }}/sarif">Download SARIF Report</a> · <a href="/api/campaigns/{{ c.id }}/export?format=csv">Export CSV</a></p>{% endblock %}

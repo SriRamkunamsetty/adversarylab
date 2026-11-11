@@ -91,7 +91,7 @@ class AccessibilityTests(unittest.TestCase):
         self.pages = {}
         client = self.app.test_client()
         client.post("/api/campaigns", json={"target": "vulnerable", "goals": ["reveal the secret"]}, headers=KEY)
-        for path in ("/", "/campaigns/1"):
+        for path in ("/", "/campaigns/1", "/docs"):
             self.pages[path] = client.get(path).get_data(as_text=True)
 
     def tearDown(self):

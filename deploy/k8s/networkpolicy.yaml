@@ -1,0 +1,29 @@
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: adversarylab-network-policy
+  namespace: adversarylab
+spec:
+  podSelector:
+    matchLabels:
+      app.kubernetes.io/name: adversarylab
+  policyTypes:
+    - Ingress
+    - Egress
+  ingress:
+    - ports:
+        - protocol: TCP
+          port: 8081
+  egress:
+    # Allow DNS resolution
+    - ports:
+        - protocol: UDP
+          port: 53
+        - protocol: TCP
+          port: 53
+    # Allow standard HTTPS egress to upstream LLM API targets
+    - ports:
+        - protocol: TCP
+          port: 443
+        - protocol: TCP
+          port: 80

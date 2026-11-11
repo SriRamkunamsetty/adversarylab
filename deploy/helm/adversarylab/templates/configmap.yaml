@@ -1,0 +1,17 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ include "adversarylab.fullname" . }}-config
+  labels:
+    {{- include "adversarylab.labels" . | nindent 4 }}
+data:
+  DATA_DIR: {{ .Values.env.dataDir | default "/data" | quote }}
+  RATE_LIMIT_PER_MIN: {{ .Values.env.rateLimitPerMin | default 120 | quote }}
+  COOKIE_SECURE: {{ .Values.env.cookieSecure | default "1" | quote }}
+  TRUST_PROXY: {{ .Values.env.trustProxy | default "1" | quote }}
+  CAMPAIGN_DEADLINE_S: {{ .Values.env.campaignDeadlineSeconds | default 60 | quote }}
+  TARGET_TIMEOUT_S: {{ .Values.env.targetTimeoutSeconds | default 15 | quote }}
+  {{- if .Values.env.targetUrl }}
+  TARGET_URL: {{ .Values.env.targetUrl | quote }}
+  TARGET_MODEL: {{ .Values.env.targetModel | default "gpt-4o-mini" | quote }}
+  {{- end }}

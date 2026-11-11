@@ -1,0 +1,12 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: adversarylab-config
+  namespace: adversarylab
+data:
+  DATA_DIR: "/data"
+  RATE_LIMIT_PER_MIN: "120"
+  COOKIE_SECURE: "1"
+  TRUST_PROXY: "1"
+  CAMPAIGN_DEADLINE_S: "60"
+  TARGET_TIMEOUT_S: "15"
