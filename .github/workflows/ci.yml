@@ -30,7 +30,7 @@ jobs:
       - name: Generate CLI SARIF validation
         run: python -m adversarylab --target hardened --goal "test ci" --sarif results.sarif
       - name: Upload SARIF report to GitHub Security
-        uses: github/codeql-action/upload-sarif@v3
+        uses: github/codeql-action/upload-sarif@v4
         if: always() && matrix.python == '3.12'
         with:
           sarif_file: results.sarif
