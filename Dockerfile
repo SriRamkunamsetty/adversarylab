@@ -1,4 +1,4 @@
-FROM python:3.12-slim
+FROM python:3.15-slim
 ENV PYTHONDONTWRITEBYTECODE=1 PYTHONUNBUFFERED=1 DATA_DIR=/data
 RUN useradd --uid 10001 --create-home app && mkdir /data && chown 10001 /data
 WORKDIR /app
